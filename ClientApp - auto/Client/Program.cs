@@ -1,4 +1,5 @@
-﻿using System;
+//Do we really need all of these references?
+using System;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -9,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace Client
 {
+    // Summary comments can be great
     class Program
     {
+        //here and throughout the code - consider use var instead of type declaration
         static int port = 8888; 
         static string address = "127.0.0.1";
         static string fileName = Guid.NewGuid().ToString() + ".txt";
@@ -82,6 +85,8 @@ namespace Client
             }
             Console.Read();
         }
+        // summary comments
+        // object obj makes hard to even guess what's happening here
         static void writerActions(object obj)
         {
             fileName = Guid.NewGuid().ToString() + ".txt";
@@ -99,7 +104,7 @@ namespace Client
                         bytes = socket.Receive(data, data.Length, 0);
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
-                    while (socket.Available > 0);
+                    while (socket.Available > 0); // can anything go wrong here?
 
                    
                     using (StreamWriter sw = File.AppendText(Environment.CurrentDirectory +"\\"+ fileName))
@@ -114,6 +119,8 @@ namespace Client
             }
 
         }
+        // it worth to put summary comments here too
+        // never use one-word-variables in the code it makes it hard to read once method became bigger
         static bool SocketConnected(Socket s)
         {
             try
