@@ -1,4 +1,5 @@
-﻿using System;
+// Do we really need all of these references?
+using System;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -10,17 +11,20 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+    //Always worth to put <summary> comments here
     class Program
     {
         static int port = 8888;
         static string ipAddress = "127.0.0.1"; 
         static List<Socket> clients = new List<Socket>();
         static List<string> chatMsg = new List<string>();
+        // why do we need this?
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
         private delegate bool EventHandler();
         static EventHandler _handler;
-
+        
+        //summary
         static void Main(string[] args)
         {
             _handler += new EventHandler(Handler);
@@ -66,8 +70,13 @@ namespace Server
                 Console.WriteLine(ex.Message);
             }
         }
+        
+        //Summary
         static void ClientThread(object StateInfo)
         {
+            // Sometimes vars are used, sometimes - type declaration
+            // Try to be consistent in such things, use the same approach
+            // (And in most cases it will be vars)
             var connectionData = (ConnectionData)StateInfo;
             var handler = connectionData.Handler;
             int bytes = 0;
@@ -83,7 +92,8 @@ namespace Server
                         bytes = handler.Receive(data);
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
-                    while (handler.Available > 0);
+                    while (handler.Available > 0); //Can anything go wrong here?
+                    
                     if(builder.ToString()!="")
                     {
                         string chatMessage = "";
@@ -127,6 +137,8 @@ namespace Server
             handler.Shutdown(SocketShutdown.Both);
             handler.Close();
         }
+        
+        //Summary comments
         static bool SocketConnected(Socket s)
         {
             bool part1 = s.Poll(1000, SelectMode.SelectRead);
@@ -137,12 +149,14 @@ namespace Server
                 return true;
         }
         
-
+        //Summary comments
         private static bool Handler()
         {
             Stop();
             return false;
         }
+        
+        //Summary comments
         public static void Stop()
         {
             foreach(var cli in clients)
@@ -153,7 +167,8 @@ namespace Server
             }           
         }
     }
-
+    
+    //Extract class into separate file, put summary comments over properties and class itself
     class ConnectionData
     {
         public Socket Handler { get; set; }
